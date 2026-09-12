@@ -1,0 +1,6 @@
+{
+  "name": "Diabetes Prediction System (ITR Project)",
+  "description": "Production-ready machine learning web application for diabetes risk prediction using clinical metrics and engineered features.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

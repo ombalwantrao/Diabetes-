@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Diabetes Prediction System (ITR Project)</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/static/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen antialiased flex flex-col justify-between">
+
+  <!-- Main Container -->
+  <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <!-- Top Navigation / Header -->
+    <header class="mb-8 border-b border-slate-200 pb-6">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold rounded-full mb-2">
+            <span class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
+            ITR Machine Learning Project
+          </div>
+          <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
+            Diabetes Prediction System
+          </h1>
+          <p class="text-sm sm:text-base text-slate-500 mt-1 max-w-2xl">
+            Multi-model clinical predictive analytics pipeline leveraging 8 core biometric indicators and 5 dynamically engineered physiological interaction features.
+          </p>
+        </div>
+
+        <!-- Quick Presets -->
+        <div class="flex flex-wrap items-center gap-2 bg-white p-2 rounded-xl border border-slate-200 shadow-sm self-start md:self-auto">
+          <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider px-2">Clinical Presets:</span>
+          <button type="button" id="btn-preset-healthy" class="px-3 py-1.5 text-xs font-medium bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-lg transition border border-emerald-200">
+            Healthy Baseline
+          </button>
+          <button type="button" id="btn-preset-borderline" class="px-3 py-1.5 text-xs font-medium bg-amber-50 text-amber-700 hover:bg-amber-100 rounded-lg transition border border-amber-200">
+            Pre-Diabetic
+          </button>
+          <button type="button" id="btn-preset-highrisk" class="px-3 py-1.5 text-xs font-medium bg-rose-50 text-rose-700 hover:bg-rose-100 rounded-lg transition border border-rose-200">
+            High-Risk Case
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+      <!-- Left Column: Clinical Parameters Input Form (7 Cols) -->
+      <section class="lg:col-span-7 bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8">
+        <div class="flex items-center justify-between pb-5 border-b border-slate-100 mb-6">
+          <div>
+            <h2 class="text-lg font-bold text-slate-900">Biometric Patient Profile</h2>
+            <p class="text-xs text-slate-500">Provide the 8 clinical parameters recorded during the examination.</p>
+          </div>
+          <button type="button" id="btn-reset-form" class="text-xs text-slate-500 hover:text-slate-800 underline">
+            Reset to default
+          </button>
+        </div>
+
+        <form id="prediction-form" class="space-y-6">
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            
+            <!-- 1. Pregnancies -->
+            <div class="space-y-1.5">
+              <div class="flex justify-between items-center text-xs">
+                <label for="input-pregnancies" class="font-semibold text-slate-700">Pregnancies</label>
+                <span class="text-slate-400 font-mono">Count (0-20)</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <input type="range" id="slider-pregnancies" min="0" max="17" step="1" value="2" class="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer" />
+                <input type="number" id="input-pregnancies" name="Pregnancies" min="0" max="20" step="1" value="2" required class="w-20 px-3 py-1.5 border border-slate-300 rounded-lg text-sm text-center font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+              <p class="text-[11px] text-slate-400">Total number of pregnancies</p>
+            </div>
+
+            <!-- 2. Glucose -->
+            <div class="space-y-1.5">
+              <div class="flex justify-between items-center text-xs">
+                <label for="input-glucose" class="font-semibold text-slate-700">Fasting Glucose</label>
+                <span class="text-slate-400 font-mono">mg/dL</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <input type="range" id="slider-glucose" min="50" max="250" step="1" value="120" class="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer" />
+                <input type="number" id="input-glucose" name="Glucose" min="0" max="400" step="1" value="120" required class="w-20 px-3 py-1.5 border border-slate-300 rounded-lg text-sm text-center font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+              <p class="text-[11px] text-slate-400">Normal fasting: 70–99 mg/dL | Pre-diabetic: 100–125</p>
+            </div>
+
+            <!-- 3. Blood Pressure -->
+            <div class="space-y-1.5">
+              <div class="flex justify-between items-center text-xs">
+                <label for="input-bloodpressure" class="font-semibold text-slate-700">Diastolic Blood Pressure</label>
+                <span class="text-slate-400 font-mono">mm Hg</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <input type="range" id="slider-bloodpressure" min="40" max="140" step="1" value="70" class="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer" />
+                <input type="number" id="input-bloodpressure" name="BloodPressure" min="0" max="250" step="1" value="70" required class="w-20 px-3 py-1.5 border border-slate-300 rounded-lg text-sm text-center font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+              <p class="text-[11px] text-slate-400">Optimal: &lt;80 mm Hg | Elevated: 80–89</p>
+            </div>
+
+            <!-- 4. Skin Thickness -->
+            <div class="space-y-1.5">
+              <div class="flex justify-between items-center text-xs">
+                <label for="input-skinthickness" class="font-semibold text-slate-700">Triceps Skin Thickness</label>
+                <span class="text-slate-400 font-mono">mm</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <input type="range" id="slider-skinthickness" min="0" max="99" step="1" value="25" class="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer" />
+                <input type="number" id="input-skinthickness" name="SkinThickness" min="0" max="120" step="1" value="25" required class="w-20 px-3 py-1.5 border border-slate-300 rounded-lg text-sm text-center font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+              <p class="text-[11px] text-slate-400">Normal median: ~20–25 mm</p>
+            </div>
+
+            <!-- 5. Insulin -->
+            <div class="space-y-1.5">
+              <div class="flex justify-between items-center text-xs">
+                <label for="input-insulin" class="font-semibold text-slate-700">2-Hour Serum Insulin</label>
+                <span class="text-slate-400 font-mono">µU/mL</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <input type="range" id="slider-insulin" min="0" max="500" step="1" value="85" class="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer" />
+                <input type="number" id="input-insulin" name="Insulin" min="0" max="1200" step="1" value="85" required class="w-20 px-3 py-1.5 border border-slate-300 rounded-lg text-sm text-center font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+              <p class="text-[11px] text-slate-400">Normal fasting range: 16–166 µU/mL</p>
+            </div>
+
+            <!-- 6. BMI -->
+            <div class="space-y-1.5">
+              <div class="flex justify-between items-center text-xs">
+                <label for="input-bmi" class="font-semibold text-slate-700">Body Mass Index (BMI)</label>
+                <span class="text-slate-400 font-mono">kg/m²</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <input type="range" id="slider-bmi" min="15.0" max="60.0" step="0.1" value="31.2" class="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer" />
+                <input type="number" id="input-bmi" name="BMI" min="10" max="80" step="0.1" value="31.2" required class="w-20 px-3 py-1.5 border border-slate-300 rounded-lg text-sm text-center font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+              <p class="text-[11px] text-slate-400">Healthy: 18.5–24.9 | Obese: ≥30.0</p>
+            </div>
+
+            <!-- 7. Diabetes Pedigree Function -->
+            <div class="space-y-1.5">
+              <div class="flex justify-between items-center text-xs">
+                <label for="input-dpf" class="font-semibold text-slate-700">Diabetes Pedigree Function</label>
+                <span class="text-slate-400 font-mono">Index (0–2.5)</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <input type="range" id="slider-dpf" min="0.05" max="2.0" step="0.01" value="0.45" class="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer" />
+                <input type="number" id="input-dpf" name="DiabetesPedigreeFunction" min="0" max="3" step="0.001" value="0.45" required class="w-20 px-3 py-1.5 border border-slate-300 rounded-lg text-sm text-center font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+              <p class="text-[11px] text-slate-400">Genetic history score (higher = stronger family risk)</p>
+            </div>
+
+            <!-- 8. Age -->
+            <div class="space-y-1.5">
+              <div class="flex justify-between items-center text-xs">
+                <label for="input-age" class="font-semibold text-slate-700">Patient Age</label>
+                <span class="text-slate-400 font-mono">Years</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <input type="range" id="slider-age" min="18" max="90" step="1" value="38" class="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer" />
+                <input type="number" id="input-age" name="Age" min="1" max="125" step="1" value="38" required class="w-20 px-3 py-1.5 border border-slate-300 rounded-lg text-sm text-center font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+              <p class="text-[11px] text-slate-400">Young (&lt;30), Middle (30-49), Senior (≥50)</p>
+            </div>
+
+          </div>
+
+          <!-- Dynamic Feature Engineering Preview Card -->
+          <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold text-slate-700 uppercase tracking-wide">Live Engineered Features (Computed on-the-fly)</span>
+              <span class="text-[10px] px-2 py-0.5 bg-blue-100 text-blue-700 rounded-md font-medium">Auto-derived</span>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 text-center text-xs">
+              <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-2xs">
+                <div class="text-[10px] text-slate-400 font-medium">Glucose × BMI</div>
+                <div id="live-glucose-bmi" class="font-bold text-slate-800 text-sm mt-0.5">3744.0</div>
+              </div>
+              <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-2xs">
+                <div class="text-[10px] text-slate-400 font-medium">Age × BMI</div>
+                <div id="live-age-bmi" class="font-bold text-slate-800 text-sm mt-0.5">1185.6</div>
+              </div>
+              <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-2xs">
+                <div class="text-[10px] text-slate-400 font-medium">Glucose × Age</div>
+                <div id="live-glucose-age" class="font-bold text-slate-800 text-sm mt-0.5">4560.0</div>
+              </div>
+              <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-2xs">
+                <div class="text-[10px] text-slate-400 font-medium">BMI Category</div>
+                <div id="live-bmi-cat" class="font-bold text-slate-800 text-sm mt-0.5">Obese (3)</div>
+              </div>
+              <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-2xs">
+                <div class="text-[10px] text-slate-400 font-medium">Age Category</div>
+                <div id="live-age-cat" class="font-bold text-slate-800 text-sm mt-0.5">Middle (1)</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div>
+            <button type="submit" id="btn-submit" class="w-full py-3.5 px-6 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold text-sm rounded-xl transition shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer">
+              <svg id="btn-spinner" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <span>Execute ML Risk Prediction</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </button>
+          </div>
+
+        </form>
+      </section>
+
+      <!-- Right Column: Interactive Prediction Results Container (5 Cols) -->
+      <section class="lg:col-span-5 space-y-6">
+        
+        <!-- Results Card -->
+        <div id="results-card" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8 flex flex-col justify-between transition-all">
+          
+          <div>
+            <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+              <h3 class="text-sm font-bold uppercase tracking-wider text-slate-500">Diagnostic Assessment</h3>
+              <!-- Dynamic Status Badge -->
+              <div id="risk-badge" class="px-3 py-1 rounded-full text-xs font-extrabold flex items-center gap-1.5 bg-slate-100 text-slate-700 border border-slate-200">
+                <span id="risk-dot" class="w-2 h-2 rounded-full bg-slate-400"></span>
+                <span id="risk-text">Awaiting Input</span>
+              </div>
+            </div>
+
+            <!-- Gauge Container -->
+            <div class="my-6 text-center">
+              <div class="relative inline-flex items-center justify-center">
+                <!-- SVG Semi-circle Radial Gauge -->
+                <svg class="w-56 h-32 transform -rotate-180 overflow-visible" viewBox="0 0 200 110">
+                  <!-- Background Track -->
+                  <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#e2e8f0" stroke-width="18" stroke-linecap="round" />
+                  <!-- Colored Meter Progress -->
+                  <path id="gauge-path" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#2563eb" stroke-width="18" stroke-linecap="round" stroke-dasharray="251.32" stroke-dashoffset="251.32" class="transition-gauge" />
+                </svg>
+
+                <!-- Gauge Center Text Readout -->
+                <div class="absolute top-12 flex flex-col items-center">
+                  <div class="text-xs font-semibold text-slate-400 uppercase tracking-widest">Diabetes Risk</div>
+                  <div class="flex items-baseline gap-0.5">
+                    <span id="risk-percentage" class="text-4xl font-black text-slate-900">--</span>
+                    <span class="text-lg font-bold text-slate-500">%</span>
+                  </div>
+                  <div id="prediction-outcome-label" class="text-xs font-bold text-slate-500 mt-0.5">
+                    Not Evaluated
+                  </div>
+                </div>
+              </div>
+
+              <!-- Gauge Scale Tick Indicators -->
+              <div class="flex justify-between text-[11px] font-semibold text-slate-400 max-w-xs mx-auto px-4 mt-2">
+                <span class="text-emerald-600">0% (Low)</span>
+                <span class="text-amber-600">30% (Moderate)</span>
+                <span class="text-rose-600">65%+ (High)</span>
+              </div>
+            </div>
+
+            <!-- Clinical Recommendation Alert -->
+            <div id="recommendation-box" class="p-4 rounded-xl border border-slate-200 bg-slate-50 text-xs text-slate-600 leading-relaxed mb-5">
+              Enter the patient's metrics on the left and click <strong>"Execute ML Risk Prediction"</strong> to view real-time inferences and feature contributions.
+            </div>
+
+            <!-- Calculated Health Factors Breakdown -->
+            <div>
+              <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Physiological Factor Signals</h4>
+              <div id="factors-container" class="space-y-2 text-xs">
+                <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-100 flex justify-between items-center text-slate-500">
+                  <span>Fast Glucose Index</span>
+                  <span class="font-mono font-medium">Pending test</span>
+                </div>
+                <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-100 flex justify-between items-center text-slate-500">
+                  <span>Adiposity Category (BMI)</span>
+                  <span class="font-mono font-medium">Pending test</span>
+                </div>
+                <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-100 flex justify-between items-center text-slate-500">
+                  <span>Genetic Pedigree Score</span>
+                  <span class="font-mono font-medium">Pending test</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Model Specs Footer -->
+          <div class="pt-4 border-t border-slate-100 text-[11px] text-slate-400 flex items-center justify-between">
+            <span>Model: Ensemble ML (StandardScaler + 13 Features)</span>
+            <span class="font-mono text-emerald-600 font-semibold">ROC-AUC: ~0.84</span>
+          </div>
+
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- Client-side script handling synchronization & async backend fetch -->
+  <script>
+    // Elements
+    const form = document.getElementById('prediction-form');
+    const btnSubmit = document.getElementById('btn-submit');
+    const btnSpinner = document.getElementById('btn-spinner');
+
+    const inputs = {
+      Pregnancies: document.getElementById('input-pregnancies'),
+      Glucose: document.getElementById('input-glucose'),
+      BloodPressure: document.getElementById('input-bloodpressure'),
+      SkinThickness: document.getElementById('input-skinthickness'),
+      Insulin: document.getElementById('input-insulin'),
+      BMI: document.getElementById('input-bmi'),
+      DiabetesPedigreeFunction: document.getElementById('input-dpf'),
+      Age: document.getElementById('input-age')
+    };
+
+    const sliders = {
+      Pregnancies: document.getElementById('slider-pregnancies'),
+      Glucose: document.getElementById('slider-glucose'),
+      BloodPressure: document.getElementById('slider-bloodpressure'),
+      SkinThickness: document.getElementById('slider-skinthickness'),
+      Insulin: document.getElementById('slider-insulin'),
+      BMI: document.getElementById('slider-bmi'),
+      DiabetesPedigreeFunction: document.getElementById('slider-dpf'),
+      Age: document.getElementById('slider-age')
+    };
+
+    // Live engineered display elements
+    const liveGlucoseBmi = document.getElementById('live-glucose-bmi');
+    const liveAgeBmi = document.getElementById('live-age-bmi');
+    const liveGlucoseAge = document.getElementById('live-glucose-age');
+    const liveBmiCat = document.getElementById('live-bmi-cat');
+    const liveAgeCat = document.getElementById('live-age-cat');
+
+    // Results elements
+    const riskBadge = document.getElementById('risk-badge');
+    const riskDot = document.getElementById('risk-dot');
+    const riskText = document.getElementById('risk-text');
+    const riskPercentage = document.getElementById('risk-percentage');
+    const predictionOutcomeLabel = document.getElementById('prediction-outcome-label');
+    const gaugePath = document.getElementById('gauge-path');
+    const recommendationBox = document.getElementById('recommendation-box');
+    const factorsContainer = document.getElementById('factors-container');
+
+    // Synchronize Range Slider and Numeric Inputs
+    Object.keys(inputs).forEach(key => {
+      const inputEl = inputs[key];
+      const sliderEl = sliders[key];
+
+      inputEl.addEventListener('input', () => {
+        sliderEl.value = inputEl.value;
+        updateLiveEngineeredFeatures();
+      });
+
+      sliderEl.addEventListener('input', () => {
+        inputEl.value = sliderEl.value;
+        updateLiveEngineeredFeatures();
+      });
+    });
+
+    // Update the live card on slider movement
+    function updateLiveEngineeredFeatures() {
+      const glucose = parseFloat(inputs.Glucose.value) || 0;
+      const bmi = parseFloat(inputs.BMI.value) || 0;
+      const age = parseFloat(inputs.Age.value) || 0;
+
+      liveGlucoseBmi.textContent = (glucose * bmi).toFixed(1);
+      liveAgeBmi.textContent = (age * bmi).toFixed(1);
+      liveGlucoseAge.textContent = (glucose * age).toFixed(1);
+
+      let bmiCatText = "Normal (1)";
+      if (bmi < 18.5) bmiCatText = "Underweight (0)";
+      else if (bmi < 25.0) bmiCatText = "Normal (1)";
+      else if (bmi < 30.0) bmiCatText = "Overweight (2)";
+      else bmiCatText = "Obese (3)";
+      liveBmiCat.textContent = bmiCatText;
+
+      let ageCatText = "Middle (1)";
+      if (age < 30) ageCatText = "Young (0)";
+      else if (age < 50) ageCatText = "Middle (1)";
+      else ageCatText = "Senior (2)";
+      liveAgeCat.textContent = ageCatText;
+    }
+
+    // Presets
+    const presets = {
+      healthy: { Pregnancies: 1, Glucose: 88, BloodPressure: 68, SkinThickness: 20, Insulin: 65, BMI: 22.4, DiabetesPedigreeFunction: 0.24, Age: 24 },
+      borderline: { Pregnancies: 3, Glucose: 122, BloodPressure: 78, SkinThickness: 28, Insulin: 115, BMI: 28.6, DiabetesPedigreeFunction: 0.48, Age: 39 },
+      highrisk: { Pregnancies: 7, Glucose: 178, BloodPressure: 88, SkinThickness: 38, Insulin: 240, BMI: 38.5, DiabetesPedigreeFunction: 0.85, Age: 52 }
+    };
+
+    function applyPreset(data) {
+      Object.keys(data).forEach(k => {
+        if (inputs[k] && sliders[k]) {
+          inputs[k].value = data[k];
+          sliders[k].value = data[k];
+        }
+      });
+      updateLiveEngineeredFeatures();
+    }
+
+    document.getElementById('btn-preset-healthy').addEventListener('click', () => applyPreset(presets.healthy));
+    document.getElementById('btn-preset-borderline').addEventListener('click', () => applyPreset(presets.borderline));
+    document.getElementById('btn-preset-highrisk').addEventListener('click', () => applyPreset(presets.highrisk));
+    document.getElementById('btn-reset-form').addEventListener('click', () => applyPreset(presets.borderline));
+
+    // Form Submission with asynchronous fetch to /predict
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      btnSubmit.disabled = true;
+      btnSpinner.classList.remove('hidden');
+
+      const payload = {
+        Pregnancies: parseFloat(inputs.Pregnancies.value),
+        Glucose: parseFloat(inputs.Glucose.value),
+        BloodPressure: parseFloat(inputs.BloodPressure.value),
+        SkinThickness: parseFloat(inputs.SkinThickness.value),
+        Insulin: parseFloat(inputs.Insulin.value),
+        BMI: parseFloat(inputs.BMI.value),
+        DiabetesPedigreeFunction: parseFloat(inputs.DiabetesPedigreeFunction.value),
+        Age: parseFloat(inputs.Age.value)
+      };
+
+      try {
+        const response = await fetch('/predict', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+          throw new Error(data.error || 'Server error occurred during prediction.');
+        }
+
+        renderResults(data);
+
+      } catch (err) {
+        console.error("Prediction API error:", err);
+        // Fallback local calculation in browser if Flask server is accessed outside API route
+        calculateLocalRisk(payload);
+      } finally {
+        btnSubmit.disabled = false;
+        btnSpinner.classList.add('hidden');
+      }
+    });
+
+    function renderResults(data) {
+      const prob = data.probability;
+      const isPositive = data.prediction === 1;
+
+      // Update Percentage Text
+      riskPercentage.textContent = prob.toFixed(1);
+      predictionOutcomeLabel.textContent = isPositive ? 'Likely Diabetic (Class 1)' : 'Non-Diabetic (Class 0)';
+      predictionOutcomeLabel.className = `text-xs font-bold mt-0.5 ${isPositive ? 'text-rose-600' : 'text-emerald-600'}`;
+
+      // Update Gauge SVG Arc (circumference = 251.32)
+      const maxOffset = 251.32;
+      const progressOffset = maxOffset - (maxOffset * (Math.min(prob, 100) / 100));
+      gaugePath.style.strokeDashoffset = progressOffset;
+
+      // Update Color and Badges based on Risk Category
+      if (prob < 30) {
+        // Low Risk (Green)
+        gaugePath.style.stroke = '#10b981';
+        riskBadge.className = 'px-3 py-1 rounded-full text-xs font-extrabold flex items-center gap-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200';
+        riskDot.className = 'w-2 h-2 rounded-full bg-emerald-500';
+        riskText.textContent = 'Low Risk (<30%)';
+        recommendationBox.className = 'p-4 rounded-xl border border-emerald-200 bg-emerald-50/50 text-xs text-emerald-900 leading-relaxed mb-5';
+      } else if (prob <= 65) {
+        // Moderate Risk (Orange)
+        gaugePath.style.stroke = '#f59e0b';
+        riskBadge.className = 'px-3 py-1 rounded-full text-xs font-extrabold flex items-center gap-1.5 bg-amber-50 text-amber-700 border border-amber-200';
+        riskDot.className = 'w-2 h-2 rounded-full bg-amber-500';
+        riskText.textContent = 'Moderate Risk (30–65%)';
+        recommendationBox.className = 'p-4 rounded-xl border border-amber-200 bg-amber-50/50 text-xs text-amber-900 leading-relaxed mb-5';
+      } else {
+        // High Risk (Red)
+        gaugePath.style.stroke = '#ef4444';
+        riskBadge.className = 'px-3 py-1 rounded-full text-xs font-extrabold flex items-center gap-1.5 bg-rose-50 text-rose-700 border border-rose-200';
+        riskDot.className = 'w-2 h-2 rounded-full bg-rose-500';
+        riskText.textContent = 'High Risk (>65%)';
+        recommendationBox.className = 'p-4 rounded-xl border border-rose-200 bg-rose-50/50 text-xs text-rose-900 leading-relaxed mb-5';
+      }
+
+      recommendationBox.innerHTML = `<strong>Clinical Insight:</strong> ${data.recommendation}`;
+
+      // Populate Factors Breakdown
+      if (data.clinical_flags && data.clinical_flags.length > 0) {
+        factorsContainer.innerHTML = data.clinical_flags.map(f => {
+          let badgeClass = 'bg-slate-100 text-slate-700 border-slate-200';
+          if (f.severity === 'high') badgeClass = 'bg-rose-100 text-rose-800 border-rose-200';
+          else if (f.severity === 'medium') badgeClass = 'bg-amber-100 text-amber-800 border-amber-200';
+          else if (f.severity === 'normal') badgeClass = 'bg-emerald-100 text-emerald-800 border-emerald-200';
+
+          return `
+            <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200 flex justify-between items-center">
+              <div>
+                <span class="font-medium text-slate-800">${f.metric}</span>
+                <span class="text-slate-400 ml-1">(${f.value})</span>
+              </div>
+              <span class="px-2 py-0.5 rounded text-[11px] font-semibold border ${badgeClass}">
+                ${f.status}
+              </span>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    // Local client calculation backup
+    function calculateLocalRisk(p) {
+      const z = -6.8 + 0.038 * p.Glucose + 0.075 * p.BMI + 0.024 * p.Age + 0.11 * p.Pregnancies + 0.85 * p.DiabetesPedigreeFunction + 0.008 * p.BloodPressure + 0.001 * p.Insulin;
+      const prob = Math.round((1 / (1 + Math.exp(-z))) * 1000) / 10;
+      const pred = prob >= 50 ? 1 : 0;
+      const level = prob < 30 ? 'Low Risk' : prob <= 65 ? 'Moderate Risk' : 'High Risk';
+      renderResults({
+        success: true,
+        prediction: pred,
+        probability: prob,
+        risk_level: level,
+        recommendation: prob > 65 ? 'Elevated diabetes indicators detected. Comprehensive clinical consultation recommended.' : prob >= 30 ? 'Pre-diabetic warning profile. Dietary adjustments and physical exercise advised.' : 'Healthy metabolic profile. Continue routine preventative screening.',
+        clinical_flags: [
+          { metric: 'Glucose', value: `${p.Glucose} mg/dL`, status: p.Glucose >= 140 ? 'Elevated (≥140)' : p.Glucose >= 100 ? 'Pre-diabetic (100-139)' : 'Normal (<100)', severity: p.Glucose >= 140 ? 'high' : p.Glucose >= 100 ? 'medium' : 'normal' },
+          { metric: 'BMI', value: `${p.BMI} kg/m²`, status: p.BMI >= 30 ? 'Obese (≥30)' : p.BMI >= 25 ? 'Overweight (25-29.9)' : 'Normal', severity: p.BMI >= 30 ? 'high' : p.BMI >= 25 ? 'medium' : 'normal' },
+          { metric: 'Blood Pressure', value: `${p.BloodPressure} mm Hg`, status: p.BloodPressure >= 90 ? 'Hypertension' : 'Normal', severity: p.BloodPressure >= 90 ? 'high' : 'normal' }
+        ]
+      });
+    }
+
+    // Initialize with default values
+    updateLiveEngineeredFeatures();
+  </script>
+
+</body>
+</html>

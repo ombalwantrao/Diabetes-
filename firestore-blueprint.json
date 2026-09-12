@@ -1,0 +1,48 @@
+{
+  "entities": {
+    "users": {
+      "title": "User",
+      "description": "Registered clinician or user account profile",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "lastLoginAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email"]
+    },
+    "predictionHistory": {
+      "title": "Prediction Record",
+      "description": "Persisted clinical prediction test results for a patient",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "patientName": { "type": "string" },
+        "patientId": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "metrics": { "type": "object" },
+        "engineered": { "type": "object" },
+        "prediction": { "type": "number" },
+        "riskPercentage": { "type": "number" },
+        "riskLevel": { "type": "string" },
+        "factors": { "type": "array", "items": { "type": "string" } },
+        "notes": { "type": "string" }
+      },
+      "required": ["userId", "timestamp", "metrics", "riskPercentage", "riskLevel"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "users",
+      "description": "User profile document accessible only by owner"
+    },
+    "/users/{userId}/predictions/{predictionId}": {
+      "schema": "predictionHistory",
+      "description": "Saved patient predictions for the authenticated user"
+    }
+  }
+}
